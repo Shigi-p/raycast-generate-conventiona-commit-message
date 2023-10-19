@@ -8,3 +8,6 @@ raycast-env.d.ts
 
 # misc
 .DS_Store
+
+# local scope direcroty
+/src/scopes/local/
