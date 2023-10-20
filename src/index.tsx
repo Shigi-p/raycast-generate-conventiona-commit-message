@@ -7,6 +7,11 @@ export default function Command() {
   const [selectedPrefix, setSelectedPrefix] = useState<null | string>(null);
   const [inputtedScope, setInputtedScope] = useState<null | string>(null);
 
+  const generateCommitMessage = ({ prefix, scope }: { prefix: string; scope?: string | null }) => {
+    if (!scope || scope?.trim() === "") return `${prefix}: `;
+    return `${prefix}(${scope}): `;
+  };
+
   return (
     <List
       isShowingDetail
@@ -25,9 +30,7 @@ export default function Command() {
               icon={_prefix.icon}
               detail={
                 <List.Item.Detail
-                  markdown={`
-commit message preview  
-\`${_prefix.value}:\``}
+                  markdown={`commit message preview : \`${generateCommitMessage({ prefix: _prefix.value })}\``}
                 />
               }
               actions={
@@ -48,9 +51,10 @@ commit message preview
               title={_scope.project}
               detail={
                 <List.Item.Detail
-                  markdown={`
-commit message preview  
-\`${selectedPrefix}${inputtedScope ? ` (${inputtedScope})` : ""}:\``}
+                  markdown={`commit message preview : \`${generateCommitMessage({
+                    prefix: selectedPrefix,
+                    scope: inputtedScope,
+                  })}\``}
                 />
               }
               actions={
@@ -59,11 +63,7 @@ commit message preview
                     // eslint-disable-next-line @raycast/prefer-title-case
                     title="Choose Scope from Project"
                     onAction={() => {
-                      if (inputtedScope === null || inputtedScope.trim() === "") {
-                        Clipboard.paste(`${selectedPrefix}: `);
-                      } else {
-                        Clipboard.paste(`${selectedPrefix}${inputtedScope ? ` (${inputtedScope}) ` : " "}:`);
-                      }
+                      Clipboard.paste(generateCommitMessage({ prefix: selectedPrefix, scope: inputtedScope }));
                     }}
                   />
                 </ActionPanel>
